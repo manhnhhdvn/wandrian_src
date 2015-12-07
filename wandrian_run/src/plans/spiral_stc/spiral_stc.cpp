@@ -6,6 +6,7 @@
  */
 
 #include "../../../include/plans/spiral_stc/spiral_stc.hpp"
+#include "../../../include/common/orientation.hpp"
 
 namespace wandrian {
 namespace plans {
@@ -78,11 +79,11 @@ void SpiralStc::scan(CellPtr current) {
       new Vector(
           (*(current->get_parent()->get_center()) - *(current->get_center()))
               / 2 / robot_size));
-  int neighbors_count = 0;
+  Orientation current_neighbor = AT_RIGHT_SIDE;
   // While current cell has a new obstacle-free neighboring cell
   bool is_starting_cell = *(current->get_center())
       == *(starting_cell->get_center());
-  while (neighbors_count < (is_starting_cell ? 4 : 3)) {
+  do {
     // Scan for the first new neighbor of current cell in counterclockwise order
     CellPtr neighbor = CellPtr(
         new Cell(
@@ -92,7 +93,6 @@ void SpiralStc::scan(CellPtr current) {
             2 * robot_size));
     std::cout << "  \033[1;33mneighbor\033[0m: " << neighbor->get_center()->x
         << "," << neighbor->get_center()->y;
-    neighbors_count++;
     if (check(neighbor) == OLD) {
       std::cout << " \033[1;45m(OLD)\033[0m\n";
       // Go to next sub-cell (need to check current cell is partially occupied or not)
@@ -111,7 +111,7 @@ void SpiralStc::scan(CellPtr current) {
       go_with(orientation++, robot_size / STEP_SIZE);
       scan(neighbor);
     }
-  }
+  } while (current_neighbor++ != (is_starting_cell ? BEHIND : AT_LEFT_SIDE));
   // Back to sub-cell of parent (need to check parent cell is partially occupied or not)
   if (!is_starting_cell) {
     go_with(orientation, robot_size / STEP_SIZE);

@@ -10,8 +10,8 @@
 
 #include "../../common/polygon.hpp"
 
-#define OLD false
-#define NEW true
+#define OLD true
+#define NEW false
 
 using namespace wandrian::common;
 
@@ -22,6 +22,13 @@ namespace spiral_stc {
 class Cell: public Polygon {
 
 public:
+  //  _____________
+  // |      |      |
+  // |  II  |  I   |
+  // |______|______|
+  // |      |      |
+  // | III  |  IV  |
+  // |______|______|
   bool quadrant1;
   bool quadrant2;
   bool quadrant3;
